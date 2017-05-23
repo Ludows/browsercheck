@@ -1,0 +1,138 @@
+html, body, .overlay-container, #overlay-wrapper, .overlay-area, .box-navigator {
+	height: 100%;
+}
+#overlay-wrapper {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 9999999999;
+	animation:  1s fadeIn;
+
+}
+#overlay-wrapper * {
+	box-sizing: border-box;
+}
+.overlay-title {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	background-color: rgba(255, 255, 255, 0.26);
+	color: white;
+	font-weight: 100;
+	padding:  10px 20px;
+	z-index: 999;
+	text-align: center;
+}
+
+.overlay-container {
+	overflow: auto;
+	width: 100%;
+	margin:  0 auto;
+}
+.box-navigator {
+	width: 20%;
+	text-align:  center;
+	position: relative;
+	display: inline-table;
+	table-layout: fixed;
+	-webkit-transition: all .15s ease-in;
+	   -moz-transition: all .15s ease-in;
+	    -ms-transition: all .15s ease-in;
+	     -o-transition: all .15s ease-in;
+	        transition: all .15s ease-in;
+}
+
+.box-navigator-chrome {
+	background-color:#f2b635
+}
+.box-navigator-internet-explorer {
+	background-color:#00caff
+}
+.box-navigator-safari {
+	background-color:#00a0e6
+}
+.box-navigator-firefox  {
+	background-color:#f19a2a
+}
+.box-navigator-opera {
+	background-color:#f25648
+}
+.box-navigator:hover a, .box-navigator:focus a {
+	opacity: 1;
+
+} 
+.box-navigator:hover {
+	opacity: 1;
+	-webkit-transform: scale(1.25);
+	   -moz-transform: scale(1.25);
+	    -ms-transform: scale(1.25);
+	     -o-transform: scale(1.25);
+	        transform: scale(1.25);
+}
+.box-navigator i {
+	color: rgb(146, 146, 146);
+	padding-bottom: 20%;
+	-webkit-transition: all .25s ease;
+	   -moz-transition: all .25s ease;
+	    -ms-transition: all .25s ease;
+	     -o-transition: all .25s ease;
+	        transition: all .25s ease;
+}
+.box-navigator:hover i {
+	color: white;
+}
+/* .box-navigator {
+	opacity: 0;
+} */
+
+.box-content {
+/* 	position: absolute;
+ */	display: table-cell;
+	vertical-align: middle;
+
+}
+.link-area-overlay a {
+	border:  1px solid white;
+	background-color: transparent;
+	color: white;
+	padding:  10px 20px;
+	border-radius: 4px;
+	font-size: 20px;
+	opacity: 0;
+	-webkit-transition: all .25s ease;
+	   -moz-transition: all .25s ease;
+	    -ms-transition: all .25s ease;
+	     -o-transition: all .25s ease;
+	        transition: all .25s ease;
+}
+.link-area-overlay a:hover, .link-area-overlay a:focus {
+	border:  1px solid white;
+	background-color: white!important;
+	color: rgb(146, 146, 146);
+
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@media (max-width: 992px) {
+	.box-navigator {
+		width: 50%;
+	}
+}
+@media (max-width: 768px) {
+	.box-navigator {
+		width: 100%;
+		float: none;
+	}
+	
+}
