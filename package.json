@@ -1,0 +1,33 @@
+{
+  "name": "browsercheck",
+  "version": "0.0.1",
+  "description": "package to track old browser. An overlay is append to forced user to download latest of a listed browsers.wq",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ludows/browsercheck.git"
+  },
+  "keywords": [
+    "browser",
+    "track",
+    "old"
+  ],
+  "author": "Pixelizer",
+  "license": "UNLICENCED",
+  "bugs": {
+    "url": "https://github.com/Ludows/browsercheck/issues"
+  },
+  "homepage": "https://github.com/Ludows/browsercheck#readme",
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "gulp": "^4.0.0",
+    "gulp-aegean": "^0.2.0",
+    "gulp-babel": "^8.0.0",
+    "gulp-require-file": "^1.1.2",
+    "gulp-sass": "^4.0.2"
+  }
+}
