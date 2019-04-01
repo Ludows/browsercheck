@@ -1,25 +1,17 @@
-"use strict";
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-;
-
-(function (root, factory) {
-  if (typeof define === 'function' && define.amd) {
+(function (global, factory) {
+  if (typeof define === "function" && define.amd) {
     define([], factory);
-  } else if ((typeof exports === "undefined" ? "undefined" : _typeof(exports)) === 'object') {
-    module.exports = factory();
+  } else if (typeof exports !== "undefined") {
+    factory();
   } else {
-    root.Browsercheck = factory();
+    var mod = {
+      exports: {}
+    };
+    factory();
+    global.browsercheck = mod.exports;
   }
-})(void 0, function () {
-  'use strict';
+})(this, function () {
+  "use strict";
 
   var defaults_opts = {
     'browsers': {
@@ -58,60 +50,39 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 
-  var BrowserCheck =
-  /*#__PURE__*/
-  function () {
-    function BrowserCheck(opts) {
-      _classCallCheck(this, BrowserCheck);
-
+  class BrowserCheck {
+    constructor(opts) {
       this.options = Object.assign(opts, defaults_opts);
       this.hooks = {
-        'init': function init() {},
-        'error': function error() {},
-        'obsolete': function obsolete() {}
+        'init': () => {},
+        'error': () => {},
+        'obsolete': () => {}
       };
+      this.current = {};
     }
 
-    _createClass(BrowserCheck, [{
-      key: "initialize",
-      value: function initialize() {
-        // this.peripheric();
-        this.getNavigator();
-      }
-    }, {
-      key: "peripheric",
-      value: function peripheric() {}
-    }, {
-      key: "createMarkup",
-      value: function createMarkup() {}
-    }, {
-      key: "getNavigator",
-      value: function getNavigator() {
-        var ua = navigator.userAgent;
-        var object;
-        Object.keys(this.options.browsers).forEach(function (navigator) {
-          switch (navigator) {
-            case value:
-              break;
+    initialize() {
+      // this.peripheric();
+      this.getNavigator();
+    }
 
-            default:
-              break;
-          }
-        });
-      }
-    }, {
-      key: "createEvents",
-      value: function createEvents() {}
-    }, {
-      key: "isOld",
-      value: function isOld() {}
-    }, {
-      key: "on",
-      value: function on(event, func) {}
-    }]);
+    peripheric() {}
 
-    return BrowserCheck;
-  }();
+    createMarkup() {}
 
-  return Browsercheck;
+    getNavigator() {
+      let ua = navigator.userAgent;
+      let object;
+      Object.keys(this.options.browsers).forEach(navigator => {
+        if (ua.indexOf(navigator.label) >= 0) {}
+      });
+    }
+
+    createEvents() {}
+
+    on(event, func) {}
+
+  }
+
+  module.exports = BrowserCheck; //  BrowserCheck
 });

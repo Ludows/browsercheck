@@ -3,13 +3,26 @@ const sass = require("gulp-sass");
 const aegean = require('gulp-aegean');
 const requireFile = require('gulp-require-file');
 const babel = require('gulp-babel');
-const umd = require('gulp-umd');
+// const umd = require('gulp-umd');
 
 function devMode(done) {
     return gulp.src('./src/js/browsercheck.js')
-        .pipe(umd())
         .pipe(babel({
-            presets: ['@babel/env']
+            "presets": [
+                [
+                  "@babel/preset-env",
+                  {
+                    "useBuiltIns": "entry",
+                    "modules": "umd",
+                    "loose": true,
+                    // "esmodules": false
+                    "targets": {
+                        "esmodules": true
+                      }
+                  }
+                ]
+            ]
+            // plugins: ["@babel/plugin-transform-modules-umd"]
         }))
         .pipe(gulp.dest('dist'))
         done()

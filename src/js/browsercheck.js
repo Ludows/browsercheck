@@ -1,4 +1,3 @@
-'use strict';
 
 var defaults_opts = {
     'browsers': {
@@ -45,6 +44,7 @@ class BrowserCheck {
             'error': () => {},
             'obsolete': () => {}
         }
+        this.current = {}
     }
     initialize() {
         // this.peripheric();
@@ -61,20 +61,12 @@ class BrowserCheck {
         let ua = navigator.userAgent
         let object;
         Object.keys(this.options.browsers).forEach((navigator) => {
-            switch (navigator) {
-                case value:
-                    
-                    break;
-            
-                default:
-                    break;
+            if(ua.indexOf(navigator.label)>=0) {
+
             }
         })
     }
     createEvents() {
-
-    }
-    isOld() {
 
     }
     on(event, func) {
@@ -82,3 +74,9 @@ class BrowserCheck {
     }
 
 }
+module.exports = BrowserCheck
+
+
+
+
+//  BrowserCheck
