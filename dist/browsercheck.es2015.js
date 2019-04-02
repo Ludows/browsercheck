@@ -1,3 +1,8 @@
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.BrowserCheck = factory());
+}(this, (function () { 'use strict';
 
 var defaults_opts = {
     'browsers': {
@@ -34,21 +39,21 @@ var defaults_opts = {
         'safari': '8',
         'opera': '41'
     }
-}
+};
 
 class BrowserCheck {
     constructor(opts) {
-        typeof opts === 'object' ? this.options =  Object.assign(opts, defaults_opts) : this.options = Object.assign({}, defaults_opts)
+        typeof opts === 'object' ? this.options =  Object.assign(opts, defaults_opts) : this.options = Object.assign({}, defaults_opts);
         this.hooks = {
             'init': () => {},
             'error': () => {},
             'obsolete': () => {}
-        }
-        this.current = {}
+        };
+        this.current = {};
     }
     initialize() {
         // this.peripheric();
-        console.log(this.options)
+        console.log(this.options);
         this.getNavigator();
 
     }
@@ -59,17 +64,16 @@ class BrowserCheck {
 
     }
     getNavigator() {
-        let ua = navigator.userAgent
-        console.log(ua)
-        let object;
+        let ua = navigator.userAgent;
+        console.log(ua);
         Object.keys(this.options.browsers).forEach((navigator) => {
-            console.log('navigator', navigator)
-            console.log('index navigator', (ua.indexOf(navigator.label)))
+            console.log('navigator', navigator);
+            console.log('index navigator', (ua.indexOf(navigator.label)));
             if((ua.indexOf(navigator.label))>=0) {
-                console.log('found', navigator)
+                console.log('found', navigator);
                 // break;
             }
-        })
+        });
     }
     createEvents() {
 
@@ -79,9 +83,13 @@ class BrowserCheck {
     }
 
 }
-export default BrowserCheck
+
 
 
 
 
 //  BrowserCheck
+
+return BrowserCheck;
+
+})));

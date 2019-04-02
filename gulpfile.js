@@ -2,28 +2,44 @@ const gulp = require("gulp");
 const sass = require("gulp-sass");
 const aegean = require('gulp-aegean');
 const requireFile = require('gulp-require-file');
+const rename = require("gulp-rename");
 const babel = require('gulp-babel');
+const rollup = require('gulp-rollup');
+
 // const umd = require('gulp-umd');
 
 function devMode(done) {
     return gulp.src('./src/js/browsercheck.js')
+        .pipe(rollup({
+            format: "umd",
+            moduleName: "BrowserCheck",
+            entry: "./src/js/browsercheck.js"
+        }))
+        .pipe(rename("browsercheck.es2015.js"))
+        .pipe(gulp.dest('dist'))   // --> writing rolledup
+        // ----------- babelizing --------------
         .pipe(babel({
             "presets": [
                 [
-                  "@babel/preset-env",
-                  {
-                    "useBuiltIns": "entry",
-                    "modules": "umd",
-                    "loose": true,
-                    // "esmodules": false
-                    "targets": {
+                  "@babel/preset-env", {
+                      "modules" : false,
+                      "targets": {
                         "esmodules": true
                       }
                   }
+                  
                 ]
-            ]
-            // plugins: ["@babel/plugin-transform-modules-umd"]
+            ],
+            "plugins" : ["@babel/plugin-transform-classes", 
+            "@babel/plugin-transform-object-assign", 
+            "@babel/plugin-proposal-object-rest-spread",
+            "@babel/plugin-transform-template-literals",
+            "@babel/plugin-transform-shorthand-properties",
+            "@babel/plugin-transform-parameters",
+            "@babel/plugin-transform-arrow-functions",
+            "transform-es2017-object-entries"]
         }))
+        .pipe(rename("browsercheck.js"))
         .pipe(gulp.dest('dist'))
         done()
 }
