@@ -6,37 +6,39 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() : typeof define === 'function' && define.amd ? define(factory) : global.BrowserCheck = factory();
+  (typeof exports === "undefined" ? "undefined" : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory() : typeof define === 'function' && define.amd ? define(factory) : global.BrowserCheck = factory();
 })(this, function () {
-  'use strict';
+  'use strict'; // import "@babel/polyfill";
 
   var defaults_opts = {
     'browsers': {
       'chrome': {
         'name': 'Chrome',
         'link': 'https://www.google.com/chrome/browser/desktop/index.html',
-        'label': 'Chrome'
+        'label': 'chrome'
       },
       'ie': {
         'name': 'Internet Explorer',
         'link': 'https://support.microsoft.com/fr-fr/help/18520/download-internet-explorer-11-offline-installer',
-        'label': 'MSIE'
+        'label': 'msie'
       },
       'safari': {
         'name': 'Safari',
         'link': 'https://support.apple.com/fr_FR/downloads/internet',
-        'label': 'Safari'
+        'label': 'safari'
       },
       'firefox': {
         'name': 'Firefox',
         'link': 'https://www.mozilla.org/fr/firefox/new/',
-        'label': 'Firefox'
+        'label': 'firefox'
       },
       'opera': {
         'name': 'Opera',
         'link': 'http://www.opera.com/fr',
-        'label': 'OPR'
+        'label': 'opr'
       }
     },
     'compatibility': {
@@ -48,13 +50,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     }
   };
 
-  let BrowserCheck =
+  var BrowserCheck =
   /*#__PURE__*/
   function () {
     function BrowserCheck(opts) {
       _classCallCheck(this, BrowserCheck);
 
-      typeof opts === 'object' ? this.options = _extends(opts, defaults_opts) : this.options = _extends({}, defaults_opts);
+      _typeof(opts) === 'object' ? this.options = _extends(opts, defaults_opts) : this.options = _extends({}, defaults_opts);
       this.hooks = {
         'init': function init() {},
         'error': function error() {},
@@ -79,16 +81,22 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     }, {
       key: "getNavigator",
       value: function getNavigator() {
-        let ua = navigator.userAgent;
+        var ua = window.navigator.userAgent.toLowerCase();
         console.log(ua);
-        Object.keys(this.options.browsers).forEach(function (navigator) {
-          console.log('navigator', navigator);
-          console.log('index navigator', ua.indexOf(navigator.label));
+        var navigators = Object.keys(this.options.browsers);
+        console.log('navigators', navigators);
 
-          if (ua.indexOf(navigator.label) >= 0) {
-            console.log('found', navigator); // break;
+        for (var i = 0; i < navigators.length; i++) {
+          var navigator = navigators[i];
+
+          if (ua.indexOf(navigator) != -1) {
+            console.log('found', navigator);
+            this.current = {
+              name: navigator.charAt(0).toUpperCase() + navigator.slice(1)
+            };
+            break; // break;
           }
-        });
+        }
       }
     }, {
       key: "createEvents",

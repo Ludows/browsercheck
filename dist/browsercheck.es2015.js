@@ -4,32 +4,33 @@
 	(global.BrowserCheck = factory());
 }(this, (function () { 'use strict';
 
+// import "@babel/polyfill";
 var defaults_opts = {
     'browsers': {
         'chrome': {
             'name': 'Chrome',
             'link': 'https://www.google.com/chrome/browser/desktop/index.html',
-            'label': 'Chrome'
+            'label': 'chrome'
         }, 
         'ie': {
             'name': 'Internet Explorer',
             'link': 'https://support.microsoft.com/fr-fr/help/18520/download-internet-explorer-11-offline-installer',
-            'label': 'MSIE'
+            'label': 'msie'
         },
         'safari': {
             'name': 'Safari',
             'link': 'https://support.apple.com/fr_FR/downloads/internet',
-            'label': 'Safari'
+            'label': 'safari'
         },
         'firefox': {
             'name': 'Firefox',
             'link': 'https://www.mozilla.org/fr/firefox/new/',
-            'label': 'Firefox'
+            'label': 'firefox'
         },
         'opera': {
             'name': 'Opera',
             'link': 'http://www.opera.com/fr',
-            'label': 'OPR'
+            'label': 'opr'
         }
     },
     'compatibility': {
@@ -64,16 +65,22 @@ class BrowserCheck {
 
     }
     getNavigator() {
-        let ua = navigator.userAgent;
+        let ua = window.navigator.userAgent.toLowerCase();
         console.log(ua);
-        Object.keys(this.options.browsers).forEach((navigator) => {
-            console.log('navigator', navigator);
-            console.log('index navigator', (ua.indexOf(navigator.label)));
-            if((ua.indexOf(navigator.label))>=0) {
+        let navigators = Object.keys(this.options.browsers);
+        console.log('navigators', navigators);
+        for (let i = 0;  i < navigators.length; i++) {
+            let navigator = navigators[i];
+            if(ua.indexOf(navigator) != -1) {
                 console.log('found', navigator);
+                this.current = {
+                    name : navigator.charAt(0).toUpperCase() + navigator.slice(1)
+                };
+                break;
                 // break;
             }
-        });
+        }
+
     }
     createEvents() {
 

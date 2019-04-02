@@ -23,10 +23,14 @@ function devMode(done) {
                 [
                   "@babel/preset-env", {
                       "modules" : false,
+                    //   "useBuiltIns": "usage",
                       "targets": {
-                        "esmodules": true
-                      }
-                  }
+                        "browsers": "last 6 years"
+                      },
+                      "include" : [
+                          "es6.array.some"
+                      ],
+                      "debug": true                  }
                   
                 ]
             ],
@@ -37,7 +41,7 @@ function devMode(done) {
             "@babel/plugin-transform-shorthand-properties",
             "@babel/plugin-transform-parameters",
             "@babel/plugin-transform-arrow-functions",
-            "transform-es2017-object-entries"]
+            "transform-es2017-object-entries" ]
         }))
         .pipe(rename("browsercheck.js"))
         .pipe(gulp.dest('dist'))
