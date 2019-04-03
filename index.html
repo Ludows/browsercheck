@@ -22,6 +22,11 @@
     <script>
         var br = new BrowserCheck();
         br.initialize();
+        console.log(br)
+        br.on('init', function(e) {
+         alert(true)
+          console.log('init');
+        })
     </script>
   </body>
 </html>

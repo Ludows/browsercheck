@@ -14,6 +14,19 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   'use strict'; // import "@babel/polyfill";
 
   var defaults_opts = {
+    'regexes': {
+      'versions': {
+        'chrome': /chrome\/([0-9]+(?:\.[0-9]+)*)/,
+        'ie': /msie ([0-9]+(?:\.[0-9]+)*)/,
+        'safari': /version\/([0-9]+(?:\.[0-9]+)*)/,
+        'firefox': /firefox\/([0-9]+(?:\.[0-9]+)*)/,
+        'opera': /opr\/([0-9]+(?:\.[0-9]+)*)/
+      }
+    },
+    'errors': {
+      'untrackedBrowser': 'ce navigateur n\'est visiblement pas tracké. Voyons voir ce qu\'il se cache la dessous...',
+      'signature': window.navigator.userAgent
+    },
     'browsers': {
       'chrome': {
         'name': 'Chrome',
@@ -49,6 +62,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       'opera': '41'
     }
   };
+  var EventsList = ['init', 'error', 'obsolete'];
 
   var BrowserCheck =
   /*#__PURE__*/
@@ -57,19 +71,19 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       _classCallCheck(this, BrowserCheck);
 
       _typeof(opts) === 'object' ? this.options = _extends(opts, defaults_opts) : this.options = _extends({}, defaults_opts);
-      this.hooks = {
-        'init': function init() {},
-        'error': function error() {},
-        'obsolete': function obsolete() {}
-      };
       this.current = {};
+      this.ua = undefined;
+      this.hasSupportedBrowserInList = false;
+      this.events = {};
     }
 
     _createClass(BrowserCheck, [{
       key: "initialize",
       value: function initialize() {
         // this.peripheric();
-        console.log(this.options);
+        // console.log(this.options)
+        this._createEvents();
+
         this.getNavigator();
       }
     }, {
@@ -79,31 +93,112 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       key: "createMarkup",
       value: function createMarkup() {}
     }, {
+      key: "getVersion",
+      value: function getVersion(name) {
+        var rtn; // console.log('getversion ', name)
+
+        if (name === 'safari') {
+          rtn = this.ua.match(this.options.regexes.versions[name])[0].substr(8);
+        } else {
+          rtn = this.ua.match(this.options.regexes.versions[name])[1];
+        }
+
+        return rtn;
+      }
+    }, {
+      key: "_handleError",
+      value: function _handleError(obj) {
+        if (!obj || !obj.type || !obj.label) {
+          throw new Error('the type and label of the message are required');
+        }
+
+        console[obj.type](this.options.errors[obj.label]);
+      }
+    }, {
       key: "getNavigator",
       value: function getNavigator() {
-        var ua = window.navigator.userAgent.toLowerCase();
-        console.log(ua);
+        this.ua = window.navigator.userAgent.toLowerCase(); // console.log(this.ua)
+        // console.log('this events', this.events)
+
+        document.dispatchEvent(this.events.init); // console.log(document.dispatchEvent(this.events.init))
+
         var navigators = Object.keys(this.options.browsers);
-        console.log('navigators', navigators);
+        var browserList = this.options.browsers;
 
         for (var i = 0; i < navigators.length; i++) {
           var navigator = navigators[i];
 
-          if (ua.indexOf(navigator) != -1) {
-            console.log('found', navigator);
+          if (this.ua.indexOf(browserList[navigator].label) != -1) {
+            // console.log('found', browserList[navigator])
             this.current = {
-              name: navigator.charAt(0).toUpperCase() + navigator.slice(1)
+              name: navigator.charAt(0).toUpperCase() + navigator.slice(1),
+              version: this.getVersion(navigator),
+              os: 'Coming soon',
+              mobile: 'Coming soon'
             };
+            this.hasSupportedBrowserInList = true;
             break; // break;
           }
         }
+
+        if (this.hasSupportedBrowserInList === true) {// alert('yeah');
+        } else {
+          this._handleError({
+            'type': 'log',
+            'label': 'untrackedBrowser'
+          });
+
+          this._handleError({
+            'type': 'log',
+            'label': 'signature'
+          });
+        }
       }
     }, {
-      key: "createEvents",
-      value: function createEvents() {}
+      key: "_createEvents",
+      value: function _createEvents() {
+        var _this = this;
+
+        // this._loadPolyfills('customEvent');
+        EventsList.forEach(function (hook) {
+          //   var event =
+          _this.events[hook] = new Event(hook, {
+            bubbles: true
+          });
+        });
+      }
+    }, {
+      key: "_loadPolyfills",
+      value: function _loadPolyfills(name) {
+        switch (name) {
+          case 'customEvent':
+            if (typeof window.CustomEvent === "function") return false;
+
+            var CustomEvent = function CustomEvent(event, params) {
+              params = params || {
+                bubbles: false,
+                cancelable: false,
+                detail: null
+              };
+              var evt = document.createEvent('CustomEvent');
+              evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+              return evt;
+            };
+
+            CustomEvent.prototype = window.Event.prototype;
+            window.CustomEvent = CustomEvent;
+            break;
+
+          default:
+            break;
+        }
+      }
     }, {
       key: "on",
-      value: function on(event, func) {}
+      value: function on(event, func) {
+        // console.log('on')
+        addEventListener(event, func, false);
+      }
     }]);
 
     return BrowserCheck;

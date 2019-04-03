@@ -6,6 +6,19 @@
 
 // import "@babel/polyfill";
 var defaults_opts = {
+    'regexes': {
+        'versions': {
+            'chrome': /chrome\/([0-9]+(?:\.[0-9]+)*)/,
+            'ie': /msie ([0-9]+(?:\.[0-9]+)*)/,
+            'safari': /version\/([0-9]+(?:\.[0-9]+)*)/,
+            'firefox': /firefox\/([0-9]+(?:\.[0-9]+)*)/,
+            'opera': /opr\/([0-9]+(?:\.[0-9]+)*)/
+        }
+    },
+    'errors' : {
+        'untrackedBrowser' : 'ce navigateur n\'est visiblement pas tracké. Voyons voir ce qu\'il se cache la dessous...',
+        'signature': window.navigator.userAgent
+    },
     'browsers': {
         'chrome': {
             'name': 'Chrome',
@@ -42,19 +55,20 @@ var defaults_opts = {
     }
 };
 
+const EventsList = ['init', 'error', 'obsolete'];
+
 class BrowserCheck {
     constructor(opts) {
         typeof opts === 'object' ? this.options =  Object.assign(opts, defaults_opts) : this.options = Object.assign({}, defaults_opts);
-        this.hooks = {
-            'init': () => {},
-            'error': () => {},
-            'obsolete': () => {}
-        };
         this.current = {};
+        this.ua = undefined;
+        this.hasSupportedBrowserInList = false;
+        this.events = {};
     }
     initialize() {
         // this.peripheric();
-        console.log(this.options);
+        // console.log(this.options)
+        this._createEvents();
         this.getNavigator();
 
     }
@@ -64,29 +78,103 @@ class BrowserCheck {
     createMarkup() {
 
     }
+    getVersion(name) {
+        let rtn;
+        // console.log('getversion ', name)
+        if(name === 'safari') {
+            rtn = this.ua.match(this.options.regexes.versions[name])[0].substr(8);
+        }
+        else {
+            rtn = this.ua.match(this.options.regexes.versions[name])[1];
+        }
+        return rtn;   
+    }
+    _handleError(obj) {
+        if(!obj || !obj.type || !obj.label) {
+            throw new Error('the type and label of the message are required');
+        }
+        console[obj.type](this.options.errors[obj.label]);
+
+    }
     getNavigator() {
-        let ua = window.navigator.userAgent.toLowerCase();
-        console.log(ua);
+        this.ua = window.navigator.userAgent.toLowerCase();
+        // console.log(this.ua)
+
+        // console.log('this events', this.events)
+
+        document.dispatchEvent(this.events.init);
+        // console.log(document.dispatchEvent(this.events.init))
+        
+
         let navigators = Object.keys(this.options.browsers);
-        console.log('navigators', navigators);
+        let browserList = this.options.browsers;
         for (let i = 0;  i < navigators.length; i++) {
             let navigator = navigators[i];
-            if(ua.indexOf(navigator) != -1) {
-                console.log('found', navigator);
+            if(this.ua.indexOf(browserList[navigator].label) != -1) {
+                // console.log('found', browserList[navigator])
                 this.current = {
-                    name : navigator.charAt(0).toUpperCase() + navigator.slice(1)
+                    name : navigator.charAt(0).toUpperCase() + navigator.slice(1),
+                    version: this.getVersion(navigator),
+                    os: 'Coming soon',
+                    mobile: 'Coming soon'
                 };
+                this.hasSupportedBrowserInList = true;
                 break;
                 // break;
             }
         }
 
-    }
-    createEvents() {
+        if(this.hasSupportedBrowserInList === true) {
+            // alert('yeah');
 
+
+        }
+        else {
+            this._handleError({
+                'type': 'log',
+                'label': 'untrackedBrowser'
+            });
+            this._handleError({
+                'type': 'log',
+                'label': 'signature'
+            });
+        }
+        
+
+    }
+    _createEvents() {
+        // this._loadPolyfills('customEvent');
+        EventsList.forEach((hook) => {
+            //   var event =
+
+              this.events[hook] =  new Event(hook, {bubbles: true});
+              
+        });
+    }
+    _loadPolyfills(name) {
+        switch (name) {
+            case 'customEvent':
+                if ( typeof window.CustomEvent === "function" ) return false;
+
+                function CustomEvent ( event, params ) {
+                    params = params || { bubbles: false, cancelable: false, detail: null };
+                    var evt = document.createEvent( 'CustomEvent' );
+                    evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+                    return evt;
+                }
+            
+                CustomEvent.prototype = window.Event.prototype;
+            
+                window.CustomEvent = CustomEvent;
+                break;
+        
+            default:
+                break;
+        }
     }
     on(event, func) {
-
+        // console.log('on')
+        addEventListener(event, func, false);
     }
 
 }
