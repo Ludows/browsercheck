@@ -58,6 +58,7 @@ class BrowserCheck {
         this.ua = undefined;
         this.hasSupportedBrowserInList = false;
         this.events = {};
+        this.handlerEnabled = {};
     }
     initialize() {
         // this.peripheric();
@@ -91,13 +92,20 @@ class BrowserCheck {
 
     }
     getNavigator() {
+        console.log('navigator')
         this.ua = window.navigator.userAgent.toLowerCase();
         // console.log(this.ua)
 
         // console.log('this events', this.events)
 
-        document.dispatchEvent(this.events.init);
-        // console.log(document.dispatchEvent(this.events.init))
+        // if(this.handlerEnabled.init && this.handlerEnabled.init === true) {
+            // console.log('rentré')
+            // document.addEventListener('init', function(e) {console.log(e)})
+            window.dispatchEvent(this.events.init)
+        // }
+
+        
+        
         
 
         let navigators = Object.keys(this.options.browsers);
@@ -137,38 +145,29 @@ class BrowserCheck {
 
     }
     _createEvents() {
-        // this._loadPolyfills('customEvent');
+        // console.log('one')
         EventsList.forEach((hook) => {
             //   var event =
 
-              this.events[hook] =  new Event(hook, {bubbles: true});
+              this.events[hook] =  new Event(hook);
               
-        })
+        })        
     }
-    _loadPolyfills(name) {
-        switch (name) {
-            case 'customEvent':
-                if ( typeof window.CustomEvent === "function" ) return false;
+    on(event, parameter) {
+        console.log('on')
+        // console.log('my custom handler')
+        this.handlerEnabled[event] = true;
 
-                function CustomEvent ( event, params ) {
-                    params = params || { bubbles: false, cancelable: false, detail: null };
-                    var evt = document.createEvent( 'CustomEvent' );
-                    evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
-                    return evt;
-                }
-            
-                CustomEvent.prototype = window.Event.prototype;
-            
-                window.CustomEvent = CustomEvent;
-                break;
-        
-            default:
-                break;
+        if(typeof parameter === 'function') {
+            window.addEventListener(event, parameter)
         }
-    }
-    on(event, func) {
-        // console.log('on')
-        addEventListener(event, func, false)
+        else {
+            parameter.elm.addEventListener(event, parameter.func)
+        }
+        
+        
+        
+        
     }
 
 }

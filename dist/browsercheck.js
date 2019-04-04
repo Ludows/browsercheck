@@ -75,6 +75,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       this.ua = undefined;
       this.hasSupportedBrowserInList = false;
       this.events = {};
+      this.handlerEnabled = {};
     }
 
     _createClass(BrowserCheck, [{
@@ -117,10 +118,14 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }, {
       key: "getNavigator",
       value: function getNavigator() {
+        console.log('navigator');
         this.ua = window.navigator.userAgent.toLowerCase(); // console.log(this.ua)
         // console.log('this events', this.events)
+        // if(this.handlerEnabled.init && this.handlerEnabled.init === true) {
+        // console.log('rentré')
+        // document.addEventListener('init', function(e) {console.log(e)})
 
-        document.dispatchEvent(this.events.init); // console.log(document.dispatchEvent(this.events.init))
+        window.dispatchEvent(this.events.init); // }
 
         var navigators = Object.keys(this.options.browsers);
         var browserList = this.options.browsers;
@@ -159,45 +164,24 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       value: function _createEvents() {
         var _this = this;
 
-        // this._loadPolyfills('customEvent');
+        // console.log('one')
         EventsList.forEach(function (hook) {
           //   var event =
-          _this.events[hook] = new Event(hook, {
-            bubbles: true
-          });
+          _this.events[hook] = new Event(hook);
         });
       }
     }, {
-      key: "_loadPolyfills",
-      value: function _loadPolyfills(name) {
-        switch (name) {
-          case 'customEvent':
-            if (typeof window.CustomEvent === "function") return false;
-
-            var CustomEvent = function CustomEvent(event, params) {
-              params = params || {
-                bubbles: false,
-                cancelable: false,
-                detail: null
-              };
-              var evt = document.createEvent('CustomEvent');
-              evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-              return evt;
-            };
-
-            CustomEvent.prototype = window.Event.prototype;
-            window.CustomEvent = CustomEvent;
-            break;
-
-          default:
-            break;
-        }
-      }
-    }, {
       key: "on",
-      value: function on(event, func) {
-        // console.log('on')
-        addEventListener(event, func, false);
+      value: function on(event, parameter) {
+        console.log('on'); // console.log('my custom handler')
+
+        this.handlerEnabled[event] = true;
+
+        if (typeof parameter === 'function') {
+          window.addEventListener(event, parameter);
+        } else {
+          parameter.elm.addEventListener(event, parameter.func);
+        }
       }
     }]);
 
